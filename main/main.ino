@@ -10,6 +10,10 @@
 //Servos setup
 #define Servo1_pin
 #define Servo2_pin
+//The angles of when the gate will be opened or closed
+#define gate_Opened 90 
+#define gate_Closed 180
+
 
 
 //IR setup
@@ -27,26 +31,46 @@ Adafruit_NeoPixel strip(LED_Strip_COUNT, LED_Strip_PIN, NEO_GRB + NEO_KHZ800);
 Servo Servo1;
 Servo Servo2;
 
+ 
+unsigned long start_Time;
+int count_Marble = 0;
+
+
+//Assign pin numbers ****NEEDS TO BE CHANGED
+const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
+//the size of the display (Width and the height) 
+int cols = 16, row = 6;
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+
 
 void setup()
 {
   	pinMode(2, OUTPUT); //LED1
   	pinMode(4, OUTPUT); //LED2
   	//Initialise LED Strip
-	strip.begin();
+	  
+    strip.begin();
   
 	//servos setup
-	Servo1.attach()
+	  Servo1.attach(Servo1_pin)
+    Servo2.attach(Servo2_pin)
 	
   	//IR setup
     pinMode (IR_receiver1_pin, INPUT); // sensor1 pin INPUT
     pinMode (IR_receiver2_pin, INPUT); // sensor2 pin INPUT
     pinMode (IR_receiver3_pin, INPUT); // sensor3  pin INPUT
 
+    //lcd setup
+    lcd.begin(cols, rows);
+    //use lcd.print(message) to print. 
+    lcd.print(0);
 }
 
 void loop()
 {
+
+  start_Time = millis();
+
   //XXXXXXX
   //LED STRIP CODE START
   //XXXXXXX
@@ -71,12 +95,49 @@ void loop()
 
   //for example, if sensor 1 detects a ball, turn led on and raise servo 1 for 
   //1.2seconds closed and .8 seconds open
+
+
+//one of the gates
   if (statusSensor1 == 1){
   	DigitalWrite(LED1, HIGH);
-    Servo1.write(90);
-    if(//1.2 seconds has passed do shit)
+    Servo1.write(gate_Opened);
+    if(millis() - start_Time >= 1200){
+      Servo1.write(gate_Closed);
+      //open or close gate
+    }
   }
-  
+
+//one of the gates 
+  if (statusSensor2 == 1){
+  	DigitalWrite(LED2, HIGH);
+    Servo2.write(gate_Opened);
+    if(millis() - start_Time >= 1200){ //decide what time it will close and change it
+      Servo2.write(gate_Closed);
+      //open or close gate
+    }
+  }
+
+//Count the number of marble
+  if(statusSensor3 = 1){
+    count_Marble++;
+    lcd.print(count_Marble);
+  }
+
+
+  /*
+  if (millis() - startTime >= 45000){
+    digitalWrite(gateOpen, LOW);
+  }
+  if (millis() - startTime >= 90000 && millis() - startTime <= 135000) {
+    digitalWrite(gateClose, HIGH);
+  }
+  else
+  {
+    digitalWrite(gateClose, LOW);
+  }
+
+*/
+
   //XXXXXXX
   //Taking Sensor Data and doing shit END
   //XXXXXXX
