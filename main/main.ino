@@ -22,8 +22,10 @@ int IR_receiver2_pin = 12;
 int IR_receiver3_pin = 11; //exit sensor
 
 //LED Pin setup
-
-
+#define LED1
+#define LED2
+#define LED3
+#define LED4
 
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(LED_Strip_COUNT, LED_Strip_PIN, NEO_GRB + NEO_KHZ800);
@@ -40,7 +42,7 @@ int count_Marble = 0;
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 //the size of the display (Width and the height) 
 int cols = 16, row = 6;
-LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
+LiquidCrystal_I2C lcd();
 
 
 void setup()
@@ -52,8 +54,8 @@ void setup()
     strip.begin();
   
 	//servos setup
-	  Servo1.attach(Servo1_pin)
-    Servo2.attach(Servo2_pin)
+	  Servo1.attach(Servo1_pin);
+    Servo2.attach(Servo2_pin);
 	
   	//IR setup
     pinMode (IR_receiver1_pin, INPUT); // sensor1 pin INPUT
@@ -99,20 +101,25 @@ void loop()
 
 //one of the gates
   if (statusSensor1 == 1){
-  	DigitalWrite(LED1, HIGH);
+  	digitalwrite(LED1, HIGH);
     Servo1.write(gate_Opened);
     if(millis() - start_Time >= 1200){
+      //turn off the green light and turn on red
       Servo1.write(gate_Closed);
+      digitalwrite(LED1, LOW);
+      digitalwrite(LED3, HIGH)
       //open or close gate
     }
   }
 
 //one of the gates 
   if (statusSensor2 == 1){
-  	DigitalWrite(LED2, HIGH);
+  	digitalwrite(LED2, HIGH);
     Servo2.write(gate_Opened);
     if(millis() - start_Time >= 1200){ //decide what time it will close and change it
       Servo2.write(gate_Closed);
+      digitalwrite(LED1, LOW);
+      digitalwrite(LED3, HIGH)
       //open or close gate
     }
   }
@@ -124,7 +131,7 @@ void loop()
   }
 
 
-  /*
+  /* similar formate we want
   if (millis() - startTime >= 45000){
     digitalWrite(gateOpen, LOW);
   }
