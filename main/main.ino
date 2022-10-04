@@ -1,6 +1,8 @@
+//libraries 
 #include <Servo.h>
 #include <LiquidCrystal_I2C.h>
 #include <Adafruit_NeoPixel.h>
+
 
 // LED Strip values
 #define LED_Strip_COUNT 12 
