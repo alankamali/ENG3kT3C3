@@ -6,12 +6,12 @@
 
 // LED Strip values
 #define LED_Strip_COUNT 12 
-#define LED_Strip_PIN A5
+#define LED_Strip_PIN 10
 #define DelayVal 50 // Time (in milliseconds) to pause between pixels
 
 //Servos setup
-#define Servo1_pin 2
-#define Servo2_pin 1
+#define Servo1_pin 3
+#define Servo2_pin 5
 //The angles of when the gate will be opened or closed
 #define gate_Opened 90 
 #define gate_Closed 180
@@ -24,10 +24,10 @@ int IR_receiver2_pin = 12;
 int IR_receiver3_pin = 11; //exit sensor
 
 //LED Pin setup
-#define LED1 3
-#define LED2 4
-#define LED3 5
-#define LED4 6
+#define LED1 2 //red
+#define LED2 4 //red
+#define LED3 6  //green
+#define LED4 8  //green
 
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(LED_Strip_COUNT, LED_Strip_PIN, NEO_GRB + NEO_KHZ800);
@@ -40,19 +40,17 @@ unsigned long start_Time;
 int count_Marble = 0;
 
 
-//Assign pin numbers ****NEEDS TO BE CHANGED
-const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 //the size of the display (Width and the height) 
-int cols = 16, rows = 6;
-LiquidCrystal_I2C lcd(0x27, cols, rows);
+int cols = 16, rows = 2;
+LiquidCrystal_I2C lcd(0x39, cols, rows); // LCD(address, cols rows); 
 
 
 void setup()
 {
   	pinMode(LED1, OUTPUT); //LED1
   	pinMode(LED2, OUTPUT); //LED2
-    pinMode(LED3, OUTPUT); //LED1
-  	pinMode(LED4, OUTPUT);
+    pinMode(LED3, OUTPUT); //LED3
+  	pinMode(LED4, OUTPUT); //LED4 
   	//Initialise LED Strip
 	  
     strip.begin();
@@ -124,8 +122,8 @@ void loop()
     Servo2.write(gate_Opened);
     if(millis() - start_Time >= 1200){ //decide what time it will close and change it
       Servo2.write(gate_Closed);
-      digitalWrite(LED1, LOW);
-      digitalWrite(LED3, HIGH);
+      digitalWrite(LED2, LOW);
+      digitalWrite(LED4, HIGH);
       //open or close gate
     }
   }
