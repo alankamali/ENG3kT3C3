@@ -10,8 +10,8 @@
 #define DelayVal 50 // Time (in milliseconds) to pause between pixels
 
 //Servos setup
-#define Servo1_pin
-#define Servo2_pin
+#define Servo1_pin 2
+#define Servo2_pin 1
 //The angles of when the gate will be opened or closed
 #define gate_Opened 90 
 #define gate_Closed 180
@@ -24,10 +24,10 @@ int IR_receiver2_pin = 12;
 int IR_receiver3_pin = 11; //exit sensor
 
 //LED Pin setup
-#define LED1
-#define LED2
-#define LED3
-#define LED4
+#define LED1 3
+#define LED2 4
+#define LED3 5
+#define LED4 6
 
 // Declare our NeoPixel strip object:
 Adafruit_NeoPixel strip(LED_Strip_COUNT, LED_Strip_PIN, NEO_GRB + NEO_KHZ800);
@@ -43,14 +43,16 @@ int count_Marble = 0;
 //Assign pin numbers ****NEEDS TO BE CHANGED
 const int rs = 12, en = 11, d4 = 5, d5 = 4, d6 = 3, d7 = 2;
 //the size of the display (Width and the height) 
-int cols = 16, row = 6;
-LiquidCrystal_I2C lcd();
+int cols = 16, rows = 6;
+LiquidCrystal_I2C lcd(0x27, cols, rows);
 
 
 void setup()
 {
-  	pinMode(2, OUTPUT); //LED1
-  	pinMode(4, OUTPUT); //LED2
+  	pinMode(LED1, OUTPUT); //LED1
+  	pinMode(LED2, OUTPUT); //LED2
+    pinMode(LED3, OUTPUT); //LED1
+  	pinMode(LED4, OUTPUT);
   	//Initialise LED Strip
 	  
     strip.begin();
@@ -65,7 +67,9 @@ void setup()
     pinMode (IR_receiver3_pin, INPUT); // sensor3  pin INPUT
 
     //lcd setup
-    lcd.begin(cols, rows);
+    //lcd.begin(cols, rows);
+    lcd.init();
+    lcd.backlight();
     //use lcd.print(message) to print. 
     lcd.print(0);
 }
@@ -103,25 +107,25 @@ void loop()
 
 //one of the gates
   if (statusSensor1 == 1){
-  	digitalwrite(LED1, HIGH);
+  	digitalWrite(LED1, HIGH);
     Servo1.write(gate_Opened);
     if(millis() - start_Time >= 1200){
       //turn off the green light and turn on red
       Servo1.write(gate_Closed);
-      digitalwrite(LED1, LOW);
-      digitalwrite(LED3, HIGH)
+      digitalWrite(LED1, LOW);
+      digitalWrite(LED3, HIGH);
       //open or close gate
     }
   }
 
 //one of the gates 
   if (statusSensor2 == 1){
-  	digitalwrite(LED2, HIGH);
+  	digitalWrite(LED2, HIGH);
     Servo2.write(gate_Opened);
     if(millis() - start_Time >= 1200){ //decide what time it will close and change it
       Servo2.write(gate_Closed);
-      digitalwrite(LED1, LOW);
-      digitalwrite(LED3, HIGH)
+      digitalWrite(LED1, LOW);
+      digitalWrite(LED3, HIGH);
       //open or close gate
     }
   }
