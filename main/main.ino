@@ -19,9 +19,12 @@
 
 
 //IR setup
-int IR_receiver1_pin = 13;
-int IR_receiver2_pin = 12;
-int IR_receiver3_pin = 11; //exit sensor
+int sensor1_pin = 13;
+int sensor2_pin = 12;
+int sensor3_pin = 11; //exit sensor
+int sensor1_state = 0;
+int sensor2_state = 0;
+int sensor3_state = 0;
 
 //LED Pin setup
 #define LED1 2 //red
@@ -63,9 +66,9 @@ void setup()
     Servo2.write(gate_Opened);
 	
   	//IR setup
-    pinMode (IR_receiver1_pin, INPUT_PULLUP); // sensor1 pin INPUT
-    pinMode (IR_receiver2_pin, INPUT_PULLUP); // sensor2 pin INPUT
-    pinMode (IR_receiver3_pin, INPUT_PULLUP); // sensor3  pin INPUT
+    pinMode(sensor1_pin, INPUT_PULLUP); // sensor1 pin INPUT
+    pinMode(sensor2_pin, INPUT_PULLUP); // sensor2 pin INPUT
+    pinMode(sensor3_pin, INPUT_PULLUP); // sensor3  pin INPUT
 
     //lcd setup
     //lcd.begin(cols, rows);
@@ -77,29 +80,56 @@ void setup()
 
 void loop()
 {
+  sensor1_state = digitalRead(sensor1_pin);
+  sensor2_state = digitalRead(sensor2_pin);
+  sensor3_state = digitalRead(sensor3_pin);
   // Gate 1
-  if (digitalRead(IR_receiver1_pin) == HIGH){
+  if (sensor1_state == LOW){  //beam has been broken
+    //green light off, red light on when beam is broken
     digitalWrite(LED1, HIGH);
-    end_time = millis() + 1200;
+    digitalWrite(LED3, LOW);
+
     Servo1.write(gate_Closed);
+    end_time = millis() + 1200;
+
     if (millis() > end_time){
+      // 
       digitalWrite(LED1, LOW);
       digitalWrite(LED3, HIGH);
       Servo1.write(gate_Opened);
     }
+    //green light on, red light off after ball has passed
+    digitalWrite(LED1, LOW);
+    digitalWrite(LED3, HIGH);
+  } else {
+    //if beam not broken then red off, green on
+    digitalWrite(LED1, LOW);
+    digitalWrite(LED3, HIGH);
+    Servo1.write(gate_Opened);
   }
 
   //Gate 2
-  if (digitalRead(IR_receiver2_pin) == HIGH){
-    
-      digitalWrite(LED2, HIGH);
-      end_time = millis() + 1200;
-      Servo2.write(gate_Closed);
-      if (millis() > end_time) {
-          digitalWrite(LED2, LOW);
-          digitalWrite(LED4, HIGH);
-          Servo2.write(gate_Opened);
-      }
+  if (sensor2_state == LOW){
+    digitalWrite(LED2, HIGH);
+    digitalWrite(LED4, LOW);
+
+    Servo2.write(gate_Closed);
+    end_time = millis() + 1200;
+
+    if (millis() > end_time){
+      // 
+      digitalWrite(LED2, LOW);
+      digitalWrite(LED4, HIGH);
+      Servo2.write(gate_Opened);
+    }
+    //green light on, red light off after ball has passed
+    digitalWrite(LED2, LOW);
+    digitalWrite(LED4, HIGH);
+  } else {
+    //if beam not broken then red off, green on
+    digitalWrite(LED1, LOW);
+    digitalWrite(LED3, HIGH);
+    Servo1.write(gate_Opened);
   }
 
 
@@ -117,25 +147,10 @@ void loop()
   //XXXXXXX
   //LED STRIP CODE END
   //XXXXXXX
-  
 
   //Count the number of marble
-  if(digitalRead(IR_receiver3_pin) == HIGH){
+  if(digitalRead(sensor3_state) == LOW){
     count_Marble++;
-    //lcd.print(count_Marble);
+    lcd.print(count_Marble);
   }
-
-
-  /* similar formate we want
-  if (millis() - startTime >= 45000){
-    digitalWrite(gateOpen, LOW);
-  }
-  if (millis() - startTime >= 90000 && millis() - startTime <= 135000) {
-    digitalWrite(gateClose, HIGH);
-  }
-  else
-  {
-    digitalWrite(gateClose, LOW);
-  }
-*/
 }
