@@ -54,12 +54,12 @@ void setup()
   	pinMode(LED2, OUTPUT); //LED2
     pinMode(LED3, OUTPUT); //LED3
   	pinMode(LED4, OUTPUT); //LED4 
-  	//Initialise LED Strip
-	  
+  	
+    //Initialise LED Strip
     strip.begin();
   
 	  //servos setup
-    //assume start position of gates open
+    //start position of gates is open as agreed with motions teams
 	  Servo1.attach(Servo1_pin);
     Servo2.attach(Servo2_pin);
     Servo1.write(gate_Opened);
@@ -71,7 +71,6 @@ void setup()
     pinMode(sensor3_pin, INPUT_PULLUP); // sensor3  pin INPUT
 
     //lcd setup
-    //lcd.begin(cols, rows);
     lcd.init();
     lcd.backlight();
     lcd.print("sonething something ");

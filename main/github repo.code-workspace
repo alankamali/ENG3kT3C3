@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../../../../Downloads/LiquidCrystal_I2C-1.1.2"
+		},
+		{
+			"path": "../../../../../../Downloads/Adafruit_NeoPixel-1.10.6"
+		}
+	],
+	"settings": {}
+}
