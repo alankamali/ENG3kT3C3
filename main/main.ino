@@ -38,7 +38,7 @@ Adafruit_NeoPixel strip(LED_Strip_COUNT, LED_Strip_PIN, NEO_GRB + NEO_KHZ800);
 Servo Servo1;
 Servo Servo2;
 
- 
+int max_count_Marble = 32767; 
 unsigned long end_time;
 int count_Marble = 0;
 
@@ -131,8 +131,7 @@ void loop()
     Servo1.write(gate_Opened);
   }
 
-
-    //XXXXXXX
+  //XXXXXXX
   //LED STRIP CODE START
   //XXXXXXX
   strip.clear(); // Set all pixel colors to 'off'
@@ -152,4 +151,9 @@ void loop()
     count_Marble++;
     lcd.print(count_Marble);
   }
+  
+  if(count_Marble == max){
+    count_Marble = 0;
+  }
+
 }
