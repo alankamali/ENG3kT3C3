@@ -13,8 +13,8 @@
 #define Servo1_pin 3
 #define Servo2_pin 5
 //The angles of when the gate will be opened or closed
-#define gate_Opened 90 
-#define gate_Closed 180
+#define gate_Opened 45 
+#define gate_Closed 90
 
 
 
@@ -38,8 +38,9 @@ Adafruit_NeoPixel strip(LED_Strip_COUNT, LED_Strip_PIN, NEO_GRB + NEO_KHZ800);
 Servo Servo1;
 Servo Servo2;
 
-int max_count_Marble = 32767; 
-unsigned long end_time;
+int max_count_Marble = 32767; //overflow of the UNO
+unsigned long end_time1;
+unsigned long end_time2;
 int count_Marble = 0;
 
 
@@ -73,7 +74,7 @@ void setup()
     //lcd setup
     lcd.init();
     lcd.backlight();
-    lcd.print("sonething something ");
+    lcd.print("We are Box 5");
     Serial.begin(9600);
 }
 
@@ -113,9 +114,9 @@ void loop()
     digitalWrite(LED4, LOW);
 
     Servo2.write(gate_Closed);
-    end_time = millis() + 1200;
+    end_time2 = millis() + 1200;
 
-    if (millis() > end_time){
+    if (millis() > end_time2){
       // 
       digitalWrite(LED2, LOW);
       digitalWrite(LED4, HIGH);
@@ -128,7 +129,7 @@ void loop()
     //if beam not broken then red off, green on
     digitalWrite(LED1, LOW);
     digitalWrite(LED3, HIGH);
-    Servo1.write(gate_Opened);
+    Servo2.write(gate_Opened);
   }
 
   //XXXXXXX
@@ -140,20 +141,17 @@ void loop()
     // Here we're using a moderately bright green color:
     strip.setPixelColor(i, strip.Color(0, 150, 0));
     strip.show();   // Send the updated pixel colors to the hardware.
-    //delay(DelayVal); // Pause before next pass through loop
   }
   //XXXXXXX
   //LED STRIP CODE END
   //XXXXXXX
 
   //Count the number of marble
-  if(digitalRead(sensor3_state) == LOW){
+  if(sensor3_state == LOW){
     count_Marble++;
     lcd.print(count_Marble);
+    if(count_Marble >= max_count_Marble){
+      count_Marble = 0;
+    }
   }
-  
-  if(count_Marble == max){
-    count_Marble = 0;
-  }
-
 }
